@@ -44,14 +44,14 @@ const insert = async ({collectionName, insertDoc}) => {
     return await database.collection(collectionName).insertOne(insertDoc);
 }
 
-const updateOne = async ({collectionName, queryDoc, updateDoc}) => {
+const updateOne = async ({collectionName, queryDoc, updateDoc, upsert}) => {
     if (!collectionName || !queryDoc || !updateDoc) {
         console.error(`Illegal db updateOne request. collectionName ${collectionName} , queryDoc ${queryDoc} , updateDoc ${updateDoc}`);
         return null;
     }
 
     const database = await getDatabase();
-    return await database.collection(collectionName).updateOne(queryDoc, updateDoc);
+    return await database.collection(collectionName).updateOne(queryDoc, updateDoc, {upsert: upsert || false});
 }
 
 module.exports = {
