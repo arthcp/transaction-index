@@ -1,5 +1,6 @@
 {
     "nodeAddress": "",
+    "blockIndexlimit": 10000,
     "dbDetails": {
         "address": "",
         "authDB": "",
