@@ -6,28 +6,33 @@ const Web3 = require('web3');
 const provider = new Web3.providers.HttpProvider(config.nodeAddress);
 const web3 = new Web3(provider);
 
-const getLatestBlock = async ({}) => {
-    return await web3.eth.getBlock("latest");
+const getLatestBlock = async () => {
+    return await web3.eth.getBlock("latest", true);
 }
 
 const getTransactionsFromBlock = async ({blockNumber}) => {
-    let blockData = await web3.eth.getBlock(blockNumber);
+    if (!blockNumber) {
+        throw new Error("blockNumber not provided");
+    }
+    console.log(`getting transactions for blockNumber ${blockNumber}`)
+    const blockData = await web3.eth.getBlock(blockNumber, true);
     return blockData.transactions;
 }
 
 const indexTransaction = async ({transaction}) => {
-    if (!transaction || !transaction.from || !transaction.to || !transaction.blockNumber || !transaction.transactionHash) {
-        throw new Error("Incomplete transaction details", transaction);
+    if (!transaction || !transaction.from || !transaction.to || !transaction.blockNumber || !transaction.hash) {
+        throw new Error("Incomplete transaction details " + JSON.stringify(transaction));
     }
+    console.log(`indexing transaction ${transaction.hash}`)
 
     const promise1 = insertTransactionDetails({transaction});
     const promise2 = insertUserTransaction({
         userAddress: transaction.from, 
-        transactionHash: transaction.transactionHash
+        transactionHash: transaction.hash
     });
     const promise3 = insertUserTransaction({
         userAddress: transaction.to, 
-        transactionHash: transaction.transactionHash
+        transactionHash: transaction.hash
     });
     await Promise.all([promise1, promise2, promise3]);
 }
@@ -37,7 +42,7 @@ const insertTransactionDetails = async ({transaction}) => {
         from: transaction.from,
         to: transaction.to,
         blockNumber: transaction.blockNumber,
-        transactionHash: transaction.transactionHash,
+        transactionHash: transaction.hash,
     };
 
     const collectionName = collections.transactionDetails;
