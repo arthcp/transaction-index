@@ -1,0 +1,14 @@
+{
+  "name": "transaction-index",
+  "version": "1.0.0",
+  "description": "store and retrieve transaction index",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "web3": "^1.2.1"
+  }
+}
