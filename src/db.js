@@ -103,6 +103,20 @@ const aggregate = async ({collectionName, aggDoc}) => {
     }
 }
 
+const drop = async ({collectionName}) => {
+    if (!collectionName) {
+        console.error("No collectionName for remove");
+        return null;
+    }
+
+    const database = await getDatabase();
+    try {
+        await database.collection(collectionName).drop();
+    } catch (e) {
+        console.error(`Error while dropping collection. ${collectionName}. Probably the collection doesn't yet exist`);
+    }
+}
+
 module.exports = {
     findOne,
     findAll,
@@ -110,4 +124,5 @@ module.exports = {
     updateOne,
     closeConnection,
     aggregate,
+    drop,
 };

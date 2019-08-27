@@ -6,6 +6,11 @@ const Web3 = require('web3');
 const provider = new Web3.providers.HttpProvider(config.nodeAddress);
 const web3 = new Web3(provider);
 
+const clearCollections = async () => {
+    await db.drop({collectionName: collections.transactionDetails});
+    await db.drop({collectionName: collections.userTransactions});
+}
+
 const getLatestBlock = async () => {
     try {
         return await web3.eth.getBlock("latest", true);
@@ -72,4 +77,5 @@ module.exports = {
     getLatestBlock,
     getTransactionsFromBlock,
     indexTransaction,
+    clearCollections,
 }
