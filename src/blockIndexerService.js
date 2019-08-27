@@ -33,16 +33,15 @@ const indexTransaction = async ({transaction}) => {
     }
     console.log(`indexing transaction ${transaction.hash}`)
 
-    const promise1 = insertTransactionDetails({transaction});
-    const promise2 = insertUserTransaction({
+    await insertTransactionDetails({transaction});
+    await insertUserTransaction({
         userAddress: transaction.from, 
         transactionHash: transaction.hash
     });
-    const promise3 = insertUserTransaction({
+    await insertUserTransaction({
         userAddress: transaction.to, 
         transactionHash: transaction.hash
     });
-    await Promise.all([promise1, promise2, promise3]);
 }
 
 const insertTransactionDetails = async ({transaction}) => {
