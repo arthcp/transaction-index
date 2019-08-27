@@ -21,13 +21,11 @@ Used to store ethereum transactions in a seperate index. From this index, user t
   * `serverPort` - Port for running REST server
 
 ### Execution ###
-The Index needs to be generated before the API is useful. 
+The Index needs to be generated before the API is used. 
 To generate the index run this in project root directory -
 ```
 node src/blockIndexer.js
 ```
-Note: Delete old index from db before regenerating index. This will be fixed soon.
-
 The API server can be started by running this in project root directory -
 ```
 node src/api.js
@@ -45,21 +43,18 @@ Sample response (JSON)-
     "status": "success",
     "data": [
         {
-            "_id": "5d64303d081f6c3913aa244c",
             "from": "0xCEc36668091A2b92B773337e4b648F690f8fD978",
             "to": "0xdfD32B08318065b363AC2827196bbe2B6B368C14",
             "blockNumber": 13085578,
             "transactionHash": "0xaef43c11e9623253caf0b5a8d5d4992be60b497171fc1c2fe62775bff971cca2"
         },
         {
-            "_id": "5d643069081f6c3913aa24ec",
             "from": "0xCEc36668091A2b92B773337e4b648F690f8fD978",
             "to": "0xdfD32B08318065b363AC2827196bbe2B6B368C14",
             "blockNumber": 13085401,
             "transactionHash": "0xb9019c6842d888a1c4cba35ac97c2fae90e8159abcd779447337d539f15b8c72"
         },
         {
-            "_id": "5d643078081f6c3913aa2520",
             "from": "0xCEc36668091A2b92B773337e4b648F690f8fD978",
             "to": "0xdfD32B08318065b363AC2827196bbe2B6B368C14",
             "blockNumber": 13085346,
