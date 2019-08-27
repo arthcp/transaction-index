@@ -25,13 +25,24 @@ const closeConnection = async () => {
 
 const findOne = async ({collectionName, queryDoc}) => {
     if (!collectionName || !queryDoc) {
-        console.error(`Illegal db find request. collectionName ${collectionName} , queryDoc ${queryDoc}`);
+        console.error(`Illegal db findOne request. collectionName ${collectionName} , queryDoc ${queryDoc}`);
         return null;
     }
 
     const db = await getDatabase();
-    let result = await db.collection(collectionName).find(queryDoc);
-    return (await result.hasNext()) ? (await result.next()) : null;
+    let result = await db.collection(collectionName).find(queryDoc).toArray();
+    return result[0] || null;
+}
+
+const findAll = async ({collectionName, queryDoc}) => {
+    if (!collectionName || !queryDoc) {
+        console.error(`Illegal db findAll request. collectionName ${collectionName} , queryDoc ${queryDoc}`);
+        return null;
+    }
+
+    const db = await getDatabase();
+    let result = await db.collection(collectionName).find(queryDoc).toArray();
+    return result;
 }
 
 const insert = async ({collectionName, insertDoc}) => {
@@ -56,6 +67,7 @@ const updateOne = async ({collectionName, queryDoc, updateDoc, upsert}) => {
 
 module.exports = {
     findOne,
+    findAll,
     insert,
     updateOne,
     closeConnection,
