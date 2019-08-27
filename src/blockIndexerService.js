@@ -7,7 +7,11 @@ const provider = new Web3.providers.HttpProvider(config.nodeAddress);
 const web3 = new Web3(provider);
 
 const getLatestBlock = async () => {
-    return await web3.eth.getBlock("latest", true);
+    try {
+        return await web3.eth.getBlock("latest", true);
+    } catch (e) {
+        throw new Error(e);
+    }
 }
 
 const getTransactionsFromBlock = async ({blockNumber}) => {
@@ -15,8 +19,12 @@ const getTransactionsFromBlock = async ({blockNumber}) => {
         throw new Error("blockNumber not provided");
     }
     console.log(`getting transactions for blockNumber ${blockNumber}`)
-    const blockData = await web3.eth.getBlock(blockNumber, true);
-    return blockData.transactions;
+    try {
+        const blockData = await web3.eth.getBlock(blockNumber, true);
+        return blockData.transactions;
+    } catch (e) {
+        throw new Error(e);
+    }
 }
 
 const indexTransaction = async ({transaction}) => {

@@ -6,8 +6,12 @@ let connection = null;
 
 const startDatabase = async () => {
     const url = `mongodb://${dbDetails.userName}:${dbDetails.password}@${dbDetails.address}:${dbDetails.port}/${dbDetails.authDB}`;
-    connection = await MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true});
-    database = connection.db();
+    try {
+        connection = await MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true});
+        database = connection.db();
+    } catch (e) {
+        throw new Error(e);
+    }
 }
 
 const getDatabase = async () => {
@@ -17,7 +21,11 @@ const getDatabase = async () => {
 
 const closeConnection = async () => {
     if (connection) {
-        connection.close();
+        try {
+            connection.close();
+        } catch (e) {
+            throw new Error(e);
+        }
         connection = null;
         database = null;
     }

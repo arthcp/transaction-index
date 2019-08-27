@@ -4,6 +4,7 @@ const service = require('./blockIndexerService');
 const db = require('./db');
 
 const indexBlocks = async () => {
+    // TODO: clear or merge old index
     const latestBlock = await service.getLatestBlock();
     for (let transaction of latestBlock.transactions) {
         try {
@@ -28,8 +29,14 @@ const indexBlocks = async () => {
         console.count("block count");
     }
 
-    db.closeConnection();
+    await db.closeConnection();
     // TODO: exit program properly
 }
 
-indexBlocks();
+
+indexBlocks().then(() => {
+    console.log("Indexing completed");
+}).catch((e) => {
+    console.error("Fatal error");
+    console.error(e);
+});

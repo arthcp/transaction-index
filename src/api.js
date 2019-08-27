@@ -25,7 +25,8 @@ app.post('/getUserTransactions', async (req, res) => {
         }
 
     } catch (e) {
-        console.error("API error", e);
+        console.error("API error");
+        console.error(e);
         res.status(500).json({status: "error"});
         return;
     }
