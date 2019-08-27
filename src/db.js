@@ -14,6 +14,7 @@ const startDatabase = async () => {
     }
 }
 
+// database variable is accessed through getter so that connection can be started in case it doesnt exist
 const getDatabase = async () => {
     if (!database) await startDatabase();
     return database;

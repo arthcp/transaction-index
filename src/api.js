@@ -10,6 +10,7 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.use(cors());
 
+// returning user transactions when post request is received at /getUserTransactions
 app.post('/getUserTransactions', async (req, res) => {
     try {
         if (req.body && req.body.userAddress) {
@@ -32,6 +33,7 @@ app.post('/getUserTransactions', async (req, res) => {
     }
 });
 
+// returning 404 for all other requests
 app.all('*', async (req, res) => {
     console.error("Wrong request");
     res.status(404).json({status: "error"});
