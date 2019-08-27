@@ -38,8 +38,12 @@ const findOne = async ({collectionName, queryDoc}) => {
     }
 
     const db = await getDatabase();
-    let result = await db.collection(collectionName).find(queryDoc).toArray();
-    return result[0] || null;
+    try {
+        let result = await db.collection(collectionName).find(queryDoc).toArray();
+        return result[0] || null;
+    } catch (e) {
+        throw new Error(e);
+    }
 }
 
 const findAll = async ({collectionName, queryDoc}) => {
@@ -49,8 +53,11 @@ const findAll = async ({collectionName, queryDoc}) => {
     }
 
     const db = await getDatabase();
-    let result = await db.collection(collectionName).find(queryDoc).toArray();
-    return result;
+    try {
+        return await db.collection(collectionName).find(queryDoc).toArray();
+    } catch (e) {
+        throw new Error(e);
+    }
 }
 
 const insert = async ({collectionName, insertDoc}) => {
@@ -60,7 +67,11 @@ const insert = async ({collectionName, insertDoc}) => {
     }
 
     const database = await getDatabase();
-    return await database.collection(collectionName).insertOne(insertDoc);
+    try {
+        return await database.collection(collectionName).insertOne(insertDoc);
+    } catch (e) {
+        throw new Error(e);
+    }
 }
 
 const updateOne = async ({collectionName, queryDoc, updateDoc, upsert}) => {
@@ -70,7 +81,25 @@ const updateOne = async ({collectionName, queryDoc, updateDoc, upsert}) => {
     }
 
     const database = await getDatabase();
-    return await database.collection(collectionName).updateOne(queryDoc, updateDoc, {upsert: upsert || false});
+    try {
+        return await database.collection(collectionName).updateOne(queryDoc, updateDoc, {upsert: upsert || false});
+    } catch (e) {
+        throw new Error(e);
+    }
+}
+
+const aggregate = async ({collectionName, aggDoc}) => {
+    if (!collectionName || !aggDoc) {
+        console.error(`Illegal db insert request. collectionName ${collectionName} , aggDoc ${aggDoc}`);
+        return null;
+    }
+    
+    const database = await getDatabase();
+    try {
+        return await database.collection(collectionName).aggregate(aggDoc).toArray();
+    } catch (e) {
+        throw new Error(e);
+    }
 }
 
 module.exports = {
@@ -79,4 +108,5 @@ module.exports = {
     insert,
     updateOne,
     closeConnection,
+    aggregate,
 };
