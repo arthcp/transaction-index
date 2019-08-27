@@ -7,27 +7,41 @@ const getUserTransactions = async ({userAddress}) => {
     }
     console.log(`getting transactions for userAddress ${userAddress}`);
 
-    const transactionHashList = await getTransactionHashList({userAddress});
-    const transactionDetailsList = await getTransactionDetailsList({transactionList: transactionHashList});
-    return transactionDetailsList;
-}
-
-const getTransactionHashList = async({userAddress}) => {
-    const queryDoc = {userAddress};
-    const collectionName = collections.userTransactions;
-
-    return (await db.findOne({collectionName, queryDoc})).transactionList || [];
-}
-
-const getTransactionDetailsList = async({transactionList}) => {
-    const queryDoc = {
-        transactionHash: {
-            [mongoOperations.in]: transactionList
+    const aggDoc = [
+        {
+            [mongoOperations.match]: {
+                userAddress: userAddress
+            }
+        },
+        {
+            [mongoOperations.unwind]: "$transactionList"
+        },
+        {
+            [mongoOperations.lookup]: {
+                from : 'transactionDetails',
+                localField: 'transactionList', 
+                foreignField: 'transactionHash', 
+                as : 'transactionArr'
+            }
+        },
+        {
+            [mongoOperations.project]: { 
+                transaction: {
+                    [mongoOperations.arrayElemAt]: ["$transactionArr", 0]
+                },
+                "_id": false
+            }
         }
-    }
-    const collectionName = collections.transactionDetails;
-
-    return (await db.findAll({collectionName, queryDoc})) || [];
+    ];
+    const collectionName = collections.userTransactions;
+    const resultDoc = await db.aggregate({collectionName, aggDoc});
+    const transactionDetailsList = 
+        resultDoc.reduce((arr, eachDoc) => {
+            const {from, to, blockNumber, transactionHash} = eachDoc.transaction;
+            return [...arr, {from, to, blockNumber, transactionHash}];
+        }, []);
+    
+    return transactionDetailsList;
 }
 
 module.exports = {
